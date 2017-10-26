@@ -1,0 +1,18 @@
+EESchema-LIBRARY Version 2.3
+#encoding utf-8
+#
+# battery_contact
+#
+DEF battery_contact J 0 40 Y Y 1 F N
+F0 "J" 0 -200 60 H V C CNN
+F1 "battery_contact" 0 300 60 H V C CNN
+F2 "" 0 0 60 H I C CNN
+F3 "" 0 0 60 H I C CNN
+DRAW
+P 10 0 1 0 -200 0 -200 50 -150 50 -150 100 200 100 200 -100 -150 -100 -150 -50 -200 -50 -200 0 N
+X + 1 -400 0 200 R 50 50 1 1 B
+X - 2 400 0 200 L 50 50 1 1 B
+ENDDRAW
+ENDDEF
+#
+#End Library
