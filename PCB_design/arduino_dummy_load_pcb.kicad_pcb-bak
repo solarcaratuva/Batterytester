@@ -5,7 +5,7 @@
     (no_connects 0)
     (area 43.914287 30.439405 267.970001 149.860001)
     (thickness 1.6)
-    (drawings 10)
+    (drawings 11)
     (tracks 609)
     (zones 0)
     (modules 115)
@@ -14,7 +14,7 @@
 
   (page A4)
   (layers
-    (0 F.Cu signal)
+    (0 F.Cu signal hide)
     (31 B.Cu signal)
     (32 B.Adhes user)
     (33 F.Adhes user)
@@ -4409,6 +4409,9 @@
       (net 59 "Net-(J3-Pad1)"))
   )
 
+  (gr_text "Battery Assessment and Testing Device V1.0" (at 100.33 143.51) (layer F.SilkS)
+    (effects (font (size 2.5 2.5) (thickness 0.3)))
+  )
   (gr_text "UVA Solar Car" (at 247.65 41.91) (layer F.SilkS)
     (effects (font (size 3 3) (thickness 0.3)))
   )

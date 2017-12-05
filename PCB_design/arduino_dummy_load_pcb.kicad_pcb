@@ -1994,7 +1994,7 @@
   )
 
   (module Connectors:he10-16d (layer F.Cu) (tedit 0) (tstamp 5A04D05C)
-    (at 86.36 41.91 180)
+    (at 87.63 41.91 180)
     (descr "Connecteur HE10 16 contacts droit")
     (tags "CONN HE10")
     (path /59FAC12D)
