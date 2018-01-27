@@ -4,7 +4,7 @@ const int CUTOFF_DISCHARGE_VOLTAGE = 3194;
 const int CUTON_DISCHARGE_VOLTAGE = 2457;
 
 void setup() { 
- MCP3209 adc(10);
+ MCP3208 adc(10);
 }
 
 void loop() {
