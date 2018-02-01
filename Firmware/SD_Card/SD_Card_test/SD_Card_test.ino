@@ -1,85 +1,97 @@
-#include <Dhcp.h>
-#include <Dns.h>
-#include <Ethernet.h>
-#include <EthernetClient.h>
-#include <EthernetServer.h>
-#include <EthernetUdp.h>
-
+#include <SPI.h>
+#include <SD.h>
 /*
+
+  Note: for viewing console output, open serial monitor and set baud rate to 9600
+
   SD card read/write
 
-  This example shows how to read and write data to and from an SD card file
-  The circuit:
-   SD card attached to SPI bus as follows:
- ** MOSI - pin 11
- ** MISO - pin 12
- ** CLK - pin 13
- ** CS - pin 10 (for Arduino Nano SD: SDCARD_SS_PIN)
- ** VCC - 5V
+  Wiring for arduino nano:
+  SD card attached to SPI bus as follows:
+  ** CS - pin D10
+  ** SCK - pin D13
+  ** MOSI - pin D11
+  ** MISO - pin D12
 
-  created   Nov 2010
-  by David A. Mellis
-  modified 9 Apr 2012
-  by Tom Igoe
-
-  This example code is in the public domain.
+  Powering SD Card reader:
+  **Vcc - 5V
+  **GND - GND
 
 */
 
-#include <SPI.h>
-#include <SD.h>
-
 File myFile;
+String FILENAME = "data.csv";
+
+int SD_CSPIN = 10;
+
+//function prototypes
+void initializeSD(); //sets up SD
+void saveData(String aFilename, String dataString); //writes a string (with a concatenated comma) to the given file
+bool createFile(String aFilename);
+
 
 void setup() {
+  initializeSD();
+  createFile(FILENAME);
+
+  // the part where we write to the SD card
+
+  while (millis() <= 300) {
+    if (millis() % 20 == 0)
+      saveData(FILENAME, String(millis()));
+  }
+
+  Serial.print("Done");
+}
+
+void loop() {
+}
+
+void initializeSD() {
   // Open serial communications and wait for port to open:
   Serial.begin(9600);
   while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB port only
   }
 
+  Serial.println("Initializing SD card...");
 
-  Serial.print("Initializing SD card...");
-
-  if (!SD.begin(10)) {
-    Serial.println("initialization failed!");
-    while (1);
+  if (!SD.begin(SD_CSPIN)) {
+    Serial.println("Initialization failed! Press reset button to try again.");
+    while (1); //ininite loop
   }
-  Serial.println("initialization done.");
-
-  // open the file. note that only one file can be open at a time,
-  // so you have to close this one before opening another.
-  myFile = SD.open("test.txt", FILE_WRITE);
-
-  // if the file opened okay, write to it:
-  if (myFile) {
-    //Serial.print("Writing to test.txt...");
-    myFile.println("Hello World!");
-    // close the file:
-    myFile.close();
-    //Serial.println("done.");
-  } else {
-    // if the file didn't open, print an error:
-    Serial.println("error opening test.txt");
-  }
-
-  // re-open the file for reading:
-  myFile = SD.open("test.txt");
-  if (myFile) {
-    Serial.println("test.txt:");
-
-    // read from the file until there's nothing else in it:
-    while (myFile.available()) {
-      Serial.write(myFile.read());
-    }
-    // close the file:
-    myFile.close();
-  } else {
-    // if the file didn't open, print an error:
-    Serial.println("error opening test.txt");
-  }
+  Serial.println("Initialization done.");
 }
 
-void loop() {
-  // nothing happens after setup
+bool createFile(String aFilename) {
+  //if file 'filename' doesn't exist yet, create it
+  if (!SD.exists(aFilename)) {
+    myFile = SD.open(aFilename, FILE_WRITE);
+    myFile.close(); // close the newly created empty file
+    Serial.println("Created file: " + aFilename);
+
+    return true;
+  }
+
+  else
+    return false;
+}
+
+void saveData(String aFilename, String dataString) {
+  //append comma to dataString for CSV file
+  dataString.concat(",");
+
+  if (SD.exists(aFilename)) { //if file 'filename' is found
+    // now append new data file
+    myFile = SD.open(aFilename, FILE_WRITE);
+    if (myFile) {
+      Serial.println("Writing: \"" + dataString + "\" to " + aFilename + "...");
+      myFile.print(dataString);
+      myFile.close(); // close the file
+      Serial.println(aFilename + " closed.");
+    }
+  }
+  else {
+    Serial.println("Error writing to file !");
+  }
 }
