@@ -20,7 +20,7 @@
 */
 
 const int CSPIN = 10;
-String FILENAME = "data.csv";
+String FILENAME = "PCB_1.csv";
 
 void setup() {
   CSVWriter sd(CSPIN); // initialize CSVWriter
@@ -29,10 +29,10 @@ void setup() {
 
   // write to the SD card
 
-  while (millis() <= 300) {
-    if (millis() % 20 == 0)
-      sd.writeToCSV(FILENAME, String(millis()));
-  }
+ // while (millis() <= 300) {
+  //  if (millis() % 20 == 0)
+   //   sd.writeToCSV(FILENAME, String(millis()));
+  //}
 
   Serial.println("done");
 }

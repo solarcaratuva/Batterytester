@@ -40,6 +40,9 @@ bool CSVWriter::createFile(String aFilename){
 	//if file 'aFilename' doesn't exist yet, create it
   if (!SD.exists(aFilename)) {
     myFile = SD.open(aFilename, FILE_WRITE);
+    Serial.println("Writing table headers...");
+    // header names
+    myFile.print("Time Stamp, Voltage A (V), Current A (A), Temperature A (deg F), Voltage B (V), Current B (A), Temperature B (deg F)");
     myFile.close(); // close the newly created empty file
     Serial.println("Created file: " + aFilename);
 
