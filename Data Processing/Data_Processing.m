@@ -36,10 +36,10 @@ input_file = fopen(filename,'r');
 if (input_file ~= -1)
      all_data=csvread(filename);
      [timeentries columns] = size(all_data);
-     voltage_data = zeros(timeentries, num_batteries);
+     voltage_data = zeros( timeentries, num_batteries);
  
     
     for n=1:1:num_batteries
-        voltage_data = all_data(:,n);
+        voltage_data(n) = all_data(:,n);
     end 
 end
