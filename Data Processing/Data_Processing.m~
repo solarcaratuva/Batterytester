@@ -39,7 +39,7 @@ if (input_file ~= -1)
         %all_data=xlsread(filename);
     %end
     
-    for n=1:1:num_batteries
+    for n=12::num_batteries
         voltage_data = all_data(:, n);
     end 
 end
