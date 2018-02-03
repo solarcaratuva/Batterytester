@@ -31,15 +31,15 @@ plot(Time,Voltage,'y-',Time,MatrixC,'go')
 
 filename = 'data_processing_test.csv'; %insert file name  
 num_batteries = 3; 
+
 input_file = fopen(filename,'r');
 if (input_file ~= -1)
-    %if (contains(filename,'csv'))
-        all_data=csvread(filename);
-    %else
-        %all_data=xlsread(filename);
-    %end
+     all_data=csvread(filename);
+     [timeentries columns] = size(all_data);
+     voltage_data = zeros(timeentries, num_batteries);
+ 
     
     for n=1:1:num_batteries
-        voltage_data = all_data(:, n);
+        voltage_data = all_data(:,n);
     end 
 end
