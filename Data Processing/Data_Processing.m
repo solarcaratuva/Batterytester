@@ -1,6 +1,6 @@
 clear;      %clear workspace
 close all;  %close all figures;
-%clc;        %clear console
+clc;        %clear console
 
 %{
 filename = 'data/data.csv';
@@ -30,16 +30,16 @@ plot(Time,Voltage,'y-',Time,MatrixC,'go')
 %seperate battery 
 
 filename = 'data_processing_test.csv'; %insert file name  
-num_batteries = 3; 
+num_batteries = 6; 
 
 input_file = fopen(filename,'r');
 if (input_file ~= -1)
      all_data=csvread(filename);
-     [timeentries columns] = size(all_data);
-     voltage_data = zeros( timeentries, num_batteries);
+     [timeentries, columns] = size(all_data);
+     voltage_data = zeros(timeentries, num_batteries);
  
     
     for n=1:1:num_batteries
-        voltage_data(n) = all_data(:,n);
+        voltage_data(:,n) = all_data(:,n);
     end 
 end
