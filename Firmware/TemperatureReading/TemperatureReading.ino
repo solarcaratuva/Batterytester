@@ -12,16 +12,11 @@ void setup() {
 void loop() {
   // Read the sensor value
   int sensorVal = analogRead(sensorPin);
+  
   // Convert reading to millivolts
-  float millivoltage = (sensorVal/1024.0) * 5000.0;
+  float millivoltage = map(sensorVal, 0, 1023, 0, 5000);
+  
   // At 250 mV the temperature is 25 C and it scales at 0.1 mV/C
-  // Millivoltage equals its difference from 250mV 
-  millivoltage -= 250;
-  // temperature equals its displacement from 25 C
-  float temperature = millivoltage * 0.1;
-  // fixed displacement
-  temperature += 25;
-  Serial.print(temperature);
-  Serial.print(",");
-  delay(1000);
+  Serial.println(temperature*1.8 + 32); //print temp in F
+  delay(10);
 }
