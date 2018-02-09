@@ -1,6 +1,7 @@
 #ifndef Discharger_h
 #define Discharger_h
 #include <Arduino.h>
+
 class Discharger{
 	public:
  /* @param SELPIN: SELPIN pin number. (Selection Pin)

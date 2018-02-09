@@ -38,13 +38,14 @@ int Discharger::read_adc(int channel){
   return adcvalue;
 }
 
-void Discharger::initialize(){
- pinMode(SELPIN, OUTPUT); 
- pinMode(DATAOUT, OUTPUT); 
- pinMode(DATAIN, INPUT); 
- pinMode(SPICLOCK, OUTPUT); 
+void Discharger::initialize(){ 
  //disable device to start with 
  digitalWrite(SELPIN,HIGH); 
  digitalWrite(DATAOUT,LOW); 
  digitalWrite(SPICLOCK,LOW); 
+ // now configure the pins
+ pinMode(SELPIN, OUTPUT); 
+ pinMode(DATAOUT, OUTPUT); 
+ pinMode(DATAIN, INPUT); 
+ pinMode(SPICLOCK, OUTPUT);
 }
