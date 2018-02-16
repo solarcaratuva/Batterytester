@@ -1,4 +1,6 @@
+%caps = capacity_matrix; %%WHEN DONE
 caps = 0.5*rand(1,416)+3;
+
 %IMPORTANT --> Upload actual battery capacity into caps vector
 %Pack matrix is the pack of batteries, position matrix is the number of the battery (1-416).
 %indexCells contains the ordered definition of the batteries (A1-A36,B1-B36,etc...)

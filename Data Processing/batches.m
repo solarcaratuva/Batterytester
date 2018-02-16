@@ -5,7 +5,7 @@ close all;
 clc;
 
 %create dummy 100x91 matrix of data
-for i=1:91 %iterate through columns
+for i=1:90 %iterate through columns
     for j=1:100 %iterate through rows
         if i==1 %timestamp column
             %batchA(j, i) = 100*j;
