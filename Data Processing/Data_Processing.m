@@ -8,22 +8,20 @@ letters = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N'];
 v = [2:3:91];
 c = [3:3:91];
 capacity_matrix = [];
-for letta = 1:length(letters) %Needs to be BatchA-N when done
+for letta = 1:length(letters) %Iterates through batch names of A-N
     
-    filename = strcat('batch',(letters(letta)),'.csv');
-    Matrix = csvread(filename);
+    filename = strcat('batch',(letters(letta)),'.csv'); %concats the batchname string
+    Matrix = csvread(filename); %opens it up
     Matrix_new = Matrix([2:end],:); %Eliminates the header strings (first row)
     Time = Matrix_new(:,1);
     num_batteries_inpack = (length(Matrix_new(1,:))-1)/3;
 
     for n = 1:num_batteries_inpack %For 30 batteries per pack
     insta_voltage_bits = Matrix_new(:,v(n));
-   % insta_voltage_volts = insta_voltage_bits*(5/4095);
+    insta_voltage_volts = insta_voltage_bits*(5/4095);
     insta_current = Matrix_new(:,c(n));
     insta_power = insta_current.*insta_voltage_bits;
     insta_capacity = cumtrapz(Time, insta_power);
-    %figure(n);
-    %plot(Time,insta_capacity);
     capacity_matrix = [capacity_matrix,insta_capacity(length(insta_capacity))];
     end 
     filename = '';
