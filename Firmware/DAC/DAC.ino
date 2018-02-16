@@ -1,3 +1,6 @@
+/*
+ * Library acquired from https://github.com/MajenkoLibraries/MCPDAC
+ */
 #include <SPI.h>
 #include "MCPDAC.h"
 
