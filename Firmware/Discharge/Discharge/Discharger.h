@@ -8,7 +8,7 @@ class Discharger{
   *  @param DATAIN: DATAIN pin number. (MISO)
   *  @param SPICLOCK: SPICLOCK pin number. (Clock)
   */
-	Discharger(int SELPIN,int DATAOUT,int DATAIN,int SPICLOCK); 
+	Discharger(int MYSELPIN,int MYDATAOUT,int MYDATAIN,int MYSPICLOCK); 
   /* @param channel number to read voltage data from
    * @return returns the digital voltage
    */
