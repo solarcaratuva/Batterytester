@@ -36,13 +36,23 @@ void CSVWriter::writeToCSV(String aFilename, String dataString){
   }
 }
 
-bool CSVWriter::createFile(String aFilename){
+bool CSVWriter::createFile(String aFilename, int numBatteries){
 	//if file 'aFilename' doesn't exist yet, create it
   if (!SD.exists(aFilename)) {
     myFile = SD.open(aFilename, FILE_WRITE);
     Serial.println("Writing table headers...");
     // header names
-    myFile.print("Time Stamp, Voltage A (V), Current A (A), Temperature A (deg F), Voltage B (V), Current B (A), Temperature B (deg F)");
+    myFile.print("Time Stamp"); // write timeStamp
+
+    //create labels for batteries
+    for(int x = 1; x <= numBatteries; x++){
+      myFile.print("Cell " + (String)x + " Voltage(V),");
+      myFile.print("Cell " + (String)x + " Current(A),");
+      myFile.print("Cell " + (String)x + " Temperature(" + (char(176)) + "C),"); //char(176) is degree symbol
+    }
+
+    myFile.println(); // go down to next row
+    
     myFile.close(); // close the newly created empty file
     Serial.println("Created file: " + aFilename);
 

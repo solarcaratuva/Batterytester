@@ -20,12 +20,13 @@
 */
 
 const int CSPIN = 10;
-String FILENAME = "PCB_1.csv";
+const String FILENAME = "PCB_1.csv";
+const int NUM_BATTERIES = 3;
 
 void setup() {
   CSVWriter sd(CSPIN); // initialize CSVWriter
 
-  sd.createFile(FILENAME);
+  sd.createFile(FILENAME, NUM_BATTERIES);
 
   // write to the SD card
 
