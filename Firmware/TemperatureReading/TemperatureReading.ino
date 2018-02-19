@@ -17,6 +17,6 @@ void loop() {
   float millivoltage = map(sensorVal, 0, 1023, 0, 5000);
   
   // At 250 mV the temperature is 25 C and it scales at 0.1 mV/C
-  Serial.println(temperature*1.8 + 32); //print temp in F
+  Serial.println(millivoltage/10*1.8+32); //print temp in F
   delay(10);
 }
