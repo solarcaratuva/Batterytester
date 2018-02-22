@@ -1,6 +1,6 @@
 #include <SPI.h>
 #include <Wire.h>
-#include <RTClib.h>
+#include "RTClib.h"
 #include <MCP3208.h>
 #include "misc.h"
 #include "Discharger.h"
