@@ -24,7 +24,7 @@ void setup() {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  // NOTE: Discharge Current = 2 * DAC Output voltage
   unsigned int mv = 1000;
   MCPDAC.setVoltage(CHANNEL_A, mv&0x0FFF);
 }
