@@ -11,7 +11,7 @@
 //get adc values using function from * library
 
 /*
-  Note: for viewing console output, open serial monitor and set baud rate to 9600
+  Note: for viewing console output, open serial monitor and set baud rate to 115200
   SD card read/write
   Wiring for arduino nano:
   SD card attached to SPI bus as follows:
@@ -76,7 +76,6 @@ void setup() {
 
   while (1) {
     // attempt to write loads of line
-    Serial.println("HELLO");
     myFile = SD.open(FILENAME, FILE_WRITE);
     writer.writeToCSV(myFile, BatteryArray, timestamp);
     myFile.close();
