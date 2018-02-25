@@ -12,6 +12,12 @@
 class CSVWriter {
   public:
     File file;
+
+    /**
+      Creates a new CSVWriter with uninitialized file
+     */
+    CSVWriter();
+    
     /**
     	Creates a new CSVWriter with the CS pin initialized to a specific CSpin
       @param CSpin the digital pin to be connected to the Chip Select
@@ -35,6 +41,11 @@ class CSVWriter {
       False if the file already existed and no new file was created
     */
     //bool createFile(String aFilename, int numBatteries);
+
+    /**
+      Set value of file
+     */
+    void setFile(File & newFile);
 
   private:
 };

@@ -4,7 +4,10 @@
 #include "CSVWriter.h"
 #include "misc.h"
 #include "BatteryCell.h"
-#include "discharger.h"
+
+// constants for this file
+#define NUM_BATTERIES 30
+#define THRESHOLD_TEMP 700
 
 // TODO:
 //update writecsv function to write all cell values to csv
@@ -28,17 +31,20 @@
 uint32_t time_flag = 0; // this gets incremented by the interrupt when it's triggered. Should be reset to zero when it's handled.
 uint32_t timestamp = 0; // Counts the number of seconds that have passed (it is never reset unless arduino is reset)
 File myFile;
+CSVWriter writer;
 BatteryCell BatteryArray[BATCH_SIZE];
-//CSVWriter writer;
+int curTemps[30] = {0}; //initial placeholder temps
+int I_set = 3.75; //value going to DAC
+bool tempThresholdExceeded = false;
 
-//Discharger dis(10,11,12,13); //declares global Discharger class
+boolean tempExceeded();
+void readWrite();
 
 void setup() {
   timestamp = 0;
-  pinMode(RTC_INTERUPT_PIN, INPUT); // configure this pin as an INPUT
+  pinMode(RTC_INTERRUPT_PIN, INPUT); // configure this pin as an INPUT
   Serial.begin(115200); // initialize Serial:
   while (!Serial)
-
     // initialize the SD and write the header to the CSV as nessesary:
     Serial.println(F("Initializing SD card..."));
   if (!SD.begin(SD_CS_PIN)) {
@@ -64,20 +70,39 @@ void setup() {
     myFile.close(); // close the newly created empty file
     Serial.println(String("Created file: ") + String(FILENAME));
   }
-  //writer.createFile(FILENAME, BATCH_SIZE);
-  //dis.initialize();   // initalizes the Discharger class (sets pins to low/high and output/input
 
   for (int i = 0; i < BATCH_SIZE; i++) { // sizeof may return bytes
     BatteryArray[i].present_voltage = 15; // TODO implement ADC
     BatteryArray[i].present_current = 18; // TODO implement ADC
     BatteryArray[i].present_temp     = 2; // TODO implement ADC
   }
-  CSVWriter writer(myFile);
+  
+  writer.setFile(myFile);
 
-  while (1) {
-    // attempt to write loads of line
-    myFile = SD.open(FILENAME, FILE_WRITE);
-    writer.writeToCSV(myFile, BatteryArray, timestamp);
-    myFile.close();
+  attachInterrupt(
+    digitalPinToInterrupt(RTC_INTERRUPT_PIN),
+    readWrite,
+    RISING
+  );
+}
+
+boolean tempExceeded() {
+  for (int i = 0; i < NUM_BATTERIES; i++) {
+    if (curTemps[i] > THRESHOLD_TEMP) { //cur_temps comes from readings compiled in the interrupt
+      I_set = 0; //TODO set the DAC to 0
+      return true; //TOO HOT
+    }
   }
+  I_set = 3.75; //TODO set DAC to 3.75
+  return false;
+}
+
+void readWrite() {
+  if(tempExceeded()) {
+    Serial.print("Temp threshold exceeded");
+    return;
+  }
+  myFile = SD.open(FILENAME, FILE_WRITE);
+  writer.writeToCSV(myFile, BatteryArray, timestamp);
+  myFile.close();
 }

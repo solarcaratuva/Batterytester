@@ -2,6 +2,9 @@
 #include "misc.h"
 #include "BatteryCell.h"
 
+
+CSVWriter::CSVWriter() {}
+
 CSVWriter::CSVWriter(File & _file) {
   file = _file; // TODO: Remove file since it does not work.
 }
@@ -19,4 +22,8 @@ void CSVWriter::writeToCSV(File & thisfile, BatteryCell values[], uint32_t times
     thisfile.print(values[i].present_temp);
   }
   thisfile.println();
+}
+
+void CSVWriter::setFile(File & newFile) {
+  file = newFile;
 }
