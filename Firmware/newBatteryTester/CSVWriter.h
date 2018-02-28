@@ -6,7 +6,7 @@
 
 #include "Arduino.h"
 #include "BatteryCell.h"
-#include <SPI.h>
+#include "misc.h"
 #include <SD.h>
 
 class CSVWriter {

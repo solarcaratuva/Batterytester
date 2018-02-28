@@ -1,6 +1,4 @@
 #include "CSVWriter.h"
-#include "misc.h"
-#include "BatteryCell.h"
 
 
 CSVWriter::CSVWriter() {}
@@ -9,7 +7,7 @@ CSVWriter::CSVWriter(File & _file) {
   file = _file; // TODO: Remove file since it does not work.
 }
 
-//file.open(FILENAME, FILE_WRITE);
+
 void CSVWriter::writeToCSV(File & thisfile, BatteryCell values[], uint32_t timestamp) {
   thisfile.print(String(timestamp) + ",");
 

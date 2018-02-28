@@ -1,4 +1,5 @@
 #include <SPI.h>
+#include <SD.h>
 #include <Wire.h>
 #include "RTClib.h"
 //#include <MCP3208.h>
@@ -19,7 +20,7 @@ int I_set = 3.75; //value going to DAC
 void setup() {
   pinMode(RTC_INTERUPT_PIN, INPUT);
   Serial.begin(9600);
-  while (!Serial);
+  while (!Serial); // wait for serial
   Discharger dis(10, 11, 12, 13);
   CSVWriter sd(SD_CS_PIN);
   dis.initialize();
@@ -28,7 +29,7 @@ void setup() {
     digitalPinToInterrupt(RTC_INTERUPT_PIN),
     time_flag++, //will change to an ISR
     RISING //every sec 
-  );
+  );  
 }
 
 void loop() {

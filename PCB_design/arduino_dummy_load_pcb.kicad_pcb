@@ -3984,7 +3984,7 @@
     (tags "SOIC 1.27")
     (path /59F644BF)
     (attr smd)
-    (fp_text reference U1 (at -0.16 5.715 180) (layer F.SilkS)
+    (fp_text reference U1 (at -4.926282 -4.9209 180) (layer F.SilkS)
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_text value MCP3208 (at 0 0.635 270) (layer F.Fab)

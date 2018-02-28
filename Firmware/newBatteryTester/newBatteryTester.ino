@@ -4,54 +4,64 @@
 #include "CSVWriter.h"
 #include "misc.h"
 #include "BatteryCell.h"
+#include "discharger.h"
 
-// constants for this file
-#define NUM_BATTERIES 30
-#define THRESHOLD_TEMP 700
+// constants located in misc.h
 
-// TODO:
-//update writecsv function to write all cell values to csv
-//get adc values using function from * library
+#include "mcp3208.h"
 
 /*
-  Note: for viewing console output, open serial monitor and set baud rate to 115200
-  SD card read/write
-  Wiring for arduino nano:
-  SD card attached to SPI bus as follows:
+  Arduino SPI (SD card, DAC, ADC):
   ** CS - pin CSPIN (any digital pin)
   ** SCK - pin D13
   ** MOSI - pin D11
   ** MISO - pin D12
-
-  Powering SD Card reader:
-  **Vcc - 5V
-  **GND - GND
 */
 
+BatteryCell BatteryArray[BATCH_SIZE];
 uint32_t time_flag = 0; // this gets incremented by the interrupt when it's triggered. Should be reset to zero when it's handled.
 uint32_t timestamp = 0; // Counts the number of seconds that have passed (it is never reset unless arduino is reset)
 File myFile;
 CSVWriter writer;
-BatteryCell BatteryArray[BATCH_SIZE];
-int curTemps[30] = {0}; //initial placeholder temps
-int I_set = 3.75; //value going to DAC
+int I_set = 3.75; // value going to DAC TODO: Allow this to be configurable over serial port
 bool tempThresholdExceeded = false;
 
+
+/*
+ * Function declarations (prototypes)
+ * Arduino should do this automatically but it's good practice.
+ */
 boolean tempExceeded();
 void readWrite();
 
 void setup() {
-  timestamp = 0;
-  pinMode(RTC_INTERRUPT_PIN, INPUT); // configure this pin as an INPUT
-  Serial.begin(115200); // initialize Serial:
+  Serial.begin(115200);
+  SPI.begin();
   while (!Serial)
-    // initialize the SD and write the header to the CSV as nessesary:
-    Serial.println(F("Initializing SD card..."));
-  if (!SD.begin(SD_CS_PIN)) {
-    Serial.println(F("Initialization failed: Press reset button to try again."));
-    while (1); // infinite loop
+
+  
+
+  /* ISR is attached to RTC_INTERUPT_PIN, which is
+   *  connected to SQR output on RTC. time_flag
+   *  is incremented every second and decremented once
+   *  things are taken care of.
+   */
+  pinMode(RTC_INTERRUPT_PIN, INPUT); // configure this pin as an INPUT
+  attachInterrupt(
+    digitalPinToInterrupt(RTC_INTERRUPT_PIN),
+    time_flag++,
+    RISING
+  );
+
+  
+  
+  // initialize the SD and write the header to the CSV as nessesary:
+  Serial.println(F("Initializing SD card..."));
+  while(!SD.begin(SD_CS_PIN)) {
+    Serial.println(F("Initialization failed: Reset or wait."));
+    delay(1000); 
   }
-  Serial.println("Initialization done");
+  Serial.println(F("Initialization done"));
 
 
   // if file exists yet, just open it:
@@ -70,31 +80,32 @@ void setup() {
     myFile.close(); // close the newly created empty file
     Serial.println(String("Created file: ") + String(FILENAME));
   }
+}
+void loop(){
 
-  for (int i = 0; i < BATCH_SIZE; i++) { // sizeof may return bytes
-    BatteryArray[i].present_voltage = 15; // TODO implement ADC
-    BatteryArray[i].present_current = 18; // TODO implement ADC
-    BatteryArray[i].present_temp     = 2; // TODO implement ADC
-  }
+// TODO: implement DAC
   
-  writer.setFile(myFile);
-
-  attachInterrupt(
-    digitalPinToInterrupt(RTC_INTERRUPT_PIN),
-    readWrite,
-    RISING
-  );
+  if(time_flag > 0){
+    time_flag--;
+    // somthing that may be preferable: you may wish to create
+    // a intermediate class that abstracts reading the ADC.
+    // this is what the Discharger class should be for.
+    // BATCH_SIZE may be regarding the number of batteries,
+    // but a new constant may be desirable to describe the 
+    // number of "discharger" boards.
+    for (int i = 0; i < BATCH_SIZE; i++) {
+  //    BatteryArray[i].present_voltage = 15;
+  //    BatteryArray[i].present_current = 18;
+  //    BatteryArray[i].present_temp    =  2;
+    }
+    //writer.setFile(myFile);
+  }
 }
 
-boolean tempExceeded() {
-  for (int i = 0; i < NUM_BATTERIES; i++) {
-    if (curTemps[i] > THRESHOLD_TEMP) { //cur_temps comes from readings compiled in the interrupt
-      I_set = 0; //TODO set the DAC to 0
-      return true; //TOO HOT
-    }
-  }
-  I_set = 3.75; //TODO set DAC to 3.75
-  return false;
+
+// returns true if tempurature exceeds limit
+boolean tempExceeded(uint16_t curTemp) {
+  return (curTemp > THRESHOLD_TEMP);
 }
 
 void readWrite() {
@@ -102,7 +113,10 @@ void readWrite() {
     Serial.print("Temp threshold exceeded");
     return;
   }
+  // attempt to write loads of line
   myFile = SD.open(FILENAME, FILE_WRITE);
   writer.writeToCSV(myFile, BatteryArray, timestamp);
   myFile.close();
+
 }
+

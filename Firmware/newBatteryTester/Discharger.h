@@ -1,27 +1,21 @@
 #ifndef Discharger_h
 #define Discharger_h
 #include <Arduino.h>
-class Discharger {
+#include "decoder.h"
+#include "mcp3208.h"
+#include <SPI.h>
+
+class discharger{
   public:
-    /* @param SELPIN: SELPIN pin number. (Selection Pin)
-        @param DATAOUT: DATAOUT pin number. (MOSI)
-        @param DATAIN: DATAIN pin number. (MISO)
-        @param SPICLOCK: SPICLOCK pin number. (Clock)
-    */
-    Discharger(int MYSELPIN, int MYDATAOUT, int MYDATAIN, int MYSPICLOCK);
-    /* @param channel number to read voltage data from
-       @return returns the digital voltage
-    */
-    int read_adc(int channel);
-    /*
-       @ Defines the pins as input and outputs, sets HIGH and LOW responses
-    */
-    void initialize();
+  
+  static uint16_t read_adc(uint8_t board, uint8_t channel){
+    // it's very ugly... but it WORKS! :)
+    // the first argument of read is a lambda (a function pointer).
+    return MCP3208::read( [=](bool b){ decoder::select(board); decoder::enable(b); } , channel );
+  }
+  
   private:
-    /*
-       The four pins needed for Discharger class.
-    */
-    int SELPIN, DATAOUT, DATAIN, SPICLOCK;
+  
 };
 
 #endif
