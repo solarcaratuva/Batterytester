@@ -6,16 +6,17 @@
 class decoder {
   public:
   static void init(){
-    DDRC |= 0b00011111; // set port direction to OUTPUT for A0,A1,A2,A3,and  A4. (TODO: Change A4 to A6. (I tried this but some reason DDRC has no effect on A6 ot A7.)
+    PORTD |= 0b10000000; // ensure that the ENABLE is HIGH (active low -> disabled)
+    DDRD  |= 0b11111000; // set port direction for D3 -- D7 to OUTPUT
   }
   
   static void select(uint8_t channel){
-    channel &= 0x0F; // prevents channel inputs from overflowing. 
-    (PORTC &= ~channel) |= channel;
+    channel = (channel & 0x0F) << 3; // constrain the data to within a nibble and shift it up. 
+    (PORTD &= ~channel) |= channel; // sort of like digitalWrite, but does all pins simultaneously.
   }
   
   static void enable(bool en){
-     en ? (PORTC |=  0b00010000) : (PORTC &= ~0b00010000); // ternary operator
+     en ? (PORTD |=  0b10000000) : (PORTD &= ~0b10000000);
   }
 };
 
