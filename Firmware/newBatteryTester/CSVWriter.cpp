@@ -3,10 +3,6 @@
 
 CSVWriter::CSVWriter() {}
 
-CSVWriter::CSVWriter(File & _file) {
-  file = _file; // TODO: Remove file since it does not work.
-}
-
 
 void CSVWriter::writeToCSV(File & thisfile, BatteryCell values[], uint32_t timestamp) {
   thisfile.print(String(timestamp) + ",");

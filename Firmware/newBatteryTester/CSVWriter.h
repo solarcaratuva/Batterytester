@@ -19,13 +19,6 @@ class CSVWriter {
     CSVWriter();
     
     /**
-    	Creates a new CSVWriter with the CS pin initialized to a specific CSpin
-      @param CSpin the digital pin to be connected to the Chip Select
-      (or slave select) port of the SD card reader
-    */
-    CSVWriter(File & file);
-
-    /**
       Writes a string (with a concatenated comma) to a the file given
       by aFileName. Note: all data will be saved to a single column.
     */

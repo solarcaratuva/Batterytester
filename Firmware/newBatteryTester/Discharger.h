@@ -7,13 +7,17 @@
 
 class discharger{
   public:
-  
   static uint16_t read_adc(uint8_t board, uint8_t channel){
     // it's very ugly... but it WORKS! :)
     // the first argument of read is a lambda (a function pointer).
     return MCP3208::read( [=](bool b){ decoder::select(board); decoder::enable(b); } , channel );
   }
-  
+  static uint16_t read_cell_a(uint8_t board){
+    return 0; // TODO : read_adc(board, [insert channel here]);
+  }
+  static uint16_t read_cell_b(uint8_t board){
+    return 0; // TODO : read_adc(board, [insert channel here]);
+  }
   private:
   
 };
