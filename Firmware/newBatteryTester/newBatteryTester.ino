@@ -29,6 +29,8 @@ volatile uint32_t time_flag = 0; // this gets incremented by the interrupt when 
 uint32_t timestamp = 0; // Counts the number of seconds that have passed (it is never reset unless arduino is reset)
 File myFile;
 uint32_t I_set = 3000; // value going to DAC TODO: Allow this to be configurable over serial port
+
+bool loggingState = false;
 bool tempThresholdExceeded = false;
 
 
@@ -42,6 +44,7 @@ void setup() {
   Serial.begin(115200);
   SPI.begin();
   SPI.setClockDivider(0);
+  pinMode(A0, INPUT);
   decoder::init(); // set pinmodes for decoder (this is hardcoded for performance)
   MCPDAC.begin(9);
   MCPDAC.setGain(CHANNEL_A,GAIN_HIGH);
@@ -60,7 +63,9 @@ void setup() {
   pinMode(RTC_INTERRUPT_PIN, INPUT); // configure this pin as an INPUT
   attachInterrupt(
     digitalPinToInterrupt(RTC_INTERRUPT_PIN),
-    [](void){time_flag++;},
+    [](void){
+      (PINC&1) ? (time_flag++) : (I_set = 0) ;
+      }, // increment time_flag if buttonState is 1
     RISING
   );
 
@@ -90,11 +95,8 @@ void setup() {
   }
 }
 void loop(){
-
-// TODO: implement DAC
   if(time_flag > 0){
-  //Serial.println(Discharger::read_voltage(0));
-    
+    //Serial.println(Discharger::read_voltage(0));
     myFile = SD.open(FILENAME, FILE_WRITE);
     myFile.print(millis()); myFile.print(',');
     for (int i = 0; i < BATCH_SIZE; i++) {
