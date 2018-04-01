@@ -111,13 +111,20 @@ void loop(){
         myFile.print(cell[0]); myFile.print(',');
         myFile.print(cell[1]); myFile.print(',');
         myFile.print(cell[2]); myFile.print(',');
+        
+          Serial.print(cell[0]);
+        if(cell[0] < VOLTAGE_CUTOFF){
+          Serial.print(cell[0]);
+          Serial.println(" cutout reached");
+          I_set = 0;
+        }
       }
       myFile.println();
       myFile.close();
       Serial.println(F("wrote stuff to SD card"));
     }
     else{
-      MCPDAC.setVoltage(CHANNEL_A, 0); // discharge_current (Amps) = 2*I_SET.
+      MCPDAC.setVoltage(CHANNEL_A, 0);
       Serial.println(F("BatteryTester off"));
     }
     time_flag--;
