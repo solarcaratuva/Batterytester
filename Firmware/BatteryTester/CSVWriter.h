@@ -3,28 +3,18 @@
 */
 #ifndef CSVwriter_h
 #define CSVwriter_h
+
 #include "Arduino.h"
+#include "misc.h"
 #include <SD.h>
 
-class CSVWriter{
-  
-  File file; /* current working file: */
+class CSVWriter {
   public:
-  	/*
-  	*	Constructor. 
-    * Creates new  with the CS pin initialized to a specific CSpin
-  	* @param CSpin the digital pin to be connected to the Chip Select
-  	* (or slave select) port of the SD card reader then opens file
-  	*/
-  	CSVWriter(int CSpin);
-  
-  	/**
-  	* Writes a string (with a concatenated comma) to a the file given
-  	* by aFileName. Note: all data will be saved to a single column.
-  	* @param aFileName The name (or directory) to the csv file to be written to
-  	* @param dataString The data to be recorded into the CSV file
-  	*/
-  	void writeCSV();
+    void print(File &file, int cell[], uint32_t &timestamp); // takes cell array and appends it to the csv. (handles the csv part)
+    void println(File &file); // goes to new line. (also resets the state so that print will read latest timestamp.)
+
+  private:
+    int state = 0; // 0: print timestamp, else: don't.
 };
 
 #endif

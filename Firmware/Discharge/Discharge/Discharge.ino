@@ -1,22 +1,19 @@
-#include "Discharger.h"
-int readvalue; 
-Discharger dis(10,11,12,13); //declares global Discharger class
+#include "decoder.h"
 
 void setup(){
-  Serial.begin(9600); 
-  dis.initialize(); //initalizes the Discharger class (sets pins to low/high and output/input
+  Serial.begin(9600);
+  
+  decoder::init();
+  decoder::enable(false);
+  pinMode(2, OUTPUT);
+  digitalWrite(2, LOW);
 }
-
-void loop() { 
- /**Serial.println(dis.read_adc(1),DEC); //calls read_adc method from Discharger class, parameter is channel on the adc  
- //Serial.println(dis.read_adc(2),DEC); 
- Serial.println(" "); 
- delay(250); **/
- 
-  readvalue = dis.read_adc(1); 
-  Serial.println(readvalue,DEC); 
-  Serial.println(" "); 
-  delay(50);
+void loop(){
+  
+  for(uint8_t i = 0; i < 4; i++){
+    decoder::select(3);
+    delay(250);
+    Serial.print(digitalRead(2));
+  }
 } 
-
 
