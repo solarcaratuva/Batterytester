@@ -15,16 +15,16 @@ class Discharger{
   static uint16_t read_voltage(uint8_t cellNum){
     // tell me what cell voltage you want to read. (don't worry about which board. I handle that.)
     //only 2 cells per board, hence cell/2. turninary operator selects which battery to read
-    return read_adc( cellNum/2 , (cellNum&1) ? 0 : 3);
+    return read_adc( cellNum/2 , !(cellNum&1) ? 0 : 3);
   }
   static uint16_t read_current(uint16_t cellNum){
     // tell me what cell current you wanna read. (don't worry about which board. I handle that.)
-    return read_adc( cellNum/2 , (cellNum&1) ? 1 : 4);
+    return read_adc( cellNum/2 , !(cellNum&1) ? 1 : 4);
   }
 
   static uint16_t read_temp(uint16_t cellNum){
     // tell me what cell temp you wanna read. (don't worry about which board. I handle that.)
-    return read_adc( cellNum/2 , (cellNum&1) ? 2 : 6);
+    return read_adc( cellNum/2 , !(cellNum&1) ? 2 : 5);
   }
   private:
   

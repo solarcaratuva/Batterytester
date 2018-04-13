@@ -111,14 +111,20 @@ void loop(){
         myFile.print(cell[0]); myFile.print(',');
         myFile.print(cell[1]); myFile.print(',');
         myFile.print(cell[2]); myFile.print(',');
+
+        Serial.print("batt" + String(i) + " voltge:");
+        Serial.println(5000.0/4096*cell[0]);
+        Serial.print("batt" + String(i) + " current:");
+        Serial.println(5000.0/4096*cell[1]);
+        Serial.print("batt" + String(i) + " temperature:");
+        Serial.println(5000.0/4096*cell[2]);
         
-          Serial.print(cell[0]);
         if(cell[0] < VOLTAGE_CUTOFF){
-          Serial.print(cell[0]);
           Serial.println(" cutout reached");
           I_set = 0;
         }
       }
+      Serial.println("\n");
       myFile.println();
       myFile.close();
       Serial.println(F("wrote stuff to SD card"));
