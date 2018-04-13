@@ -11,7 +11,7 @@
 #define RTC_INTERRUPT_PIN 2       // RTC Will be connected to pin D2 to trigger interrupt every 1 second
 #define THRESHOLD_TEMP 700
 #define VOLTAGE_CUTOFF 2457      // defines the voltage cutoff for cells (2457 = 3V)
-#define DISCHARGE_CURRENT 4000    // This is the discharge rate we plan to test the boards with
+#define DISCHARGE_CURRENT 2000    // This is the discharge rate we plan to test the boards with
 
 
 #endif
