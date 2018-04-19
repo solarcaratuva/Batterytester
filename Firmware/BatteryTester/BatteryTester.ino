@@ -8,20 +8,18 @@
 #include "RTClib.h"
 #include "mcp3208.h"
 RTC_DS1307 rtc;
-// constants located in misc.h
+/* constants located in misc.h
 
-
-/*
-  Arduino SPI (SD card, DAC, ADC):
-  ** CS - pin CSPIN (any digital pin)
-  ** SCK - pin D13
-  ** MOSI - pin D11
-  ** MISO - pin D12
-  * 
-  * NOTE: Due to poor hardware implementation, the SD breakout card requires a 100 ohm resistor in series with MISO.
-  * This is because for some unknown reason, the PCB designer of the SD card has tied 3OE pin to ground, so it remains 
-  * in a low impedance state regardless of the CS pin. This goes against the SPI standard and causes problems when 
-  * attempting to read other chips.
+Arduino SPI (SD card, DAC, ADC):
+** CS - pin CSPIN (any digital pin)
+** SCK - pin D13
+** MOSI - pin D11
+** MISO - pin D12
+* 
+* NOTE: Due to poor hardware implementation, the SD breakout card requires a 100 ohm resistor in series with MISO.
+* This is because for some unknown reason, the PCB designer of the SD card has tied 3OE pin to ground, so it remains 
+* in a low impedance state regardless of the CS pin. This goes against the SPI standard and causes problems when 
+* attempting to read other chips.
 */
 
 
@@ -30,16 +28,6 @@ volatile uint32_t time_flag = 0; // this gets incremented by the interrupt when 
 uint32_t timestamp = 0; // Counts the number of seconds that have passed (it is never reset unless arduino is reset)
 File myFile;
 uint32_t I_set = 0; // discharge current
-
-bool loggingState = false;
-bool tempThresholdExceeded = false;
-
-
-/* Function declarations (prototypes)
- * Arduino should do this automatically but it's good practice.
- */
-boolean tempExceeded();
-void readWrite();
 
 void setup() {
   Serial.begin(115200);
@@ -98,36 +86,43 @@ void setup() {
     RISING
   );
 }
+
 void loop(){
   if(time_flag > 0){
-    if(PINC&1/*A0==true*/){
-      MCPDAC.setVoltage(CHANNEL_A, DISCHARGE_CURRENT/2); // discharge_current (Amps) = 2*I_SET.
+    if(PINC&1/*A0==true*/){ // check 
+     MCPDAC.setVoltage(CHANNEL_A, I_set/2); // discharge_current (Amps) = 2*I_SET.
+
       myFile = SD.open(FILENAME, FILE_WRITE);
       myFile.print(millis()); myFile.print(',');
       for (int i = 0; i < BATCH_SIZE; i++) {
         cell[0] = Discharger::read_voltage(i);
         cell[1] = Discharger::read_current(i);
         cell[2] = Discharger::read_temp(i);
+        
+        if(cell[0] < VOLTAGE_CUTOFF){
+          Serial.println(F(" cutout reached"));
+          I_set = 0;
+        }
+        else if(cell[2] > THRESHOLD_TEMP){
+          Serial.println(F(" tempurature limit reached!"));
+          I_set = 0;
+        }
+        else{
+          Serial.println(F(" discharging"));
+          I_set = DISCHARGE_CURRENT;
+          
+        }
         myFile.print(cell[0]); myFile.print(',');
         myFile.print(cell[1]); myFile.print(',');
         myFile.print(cell[2]); myFile.print(',');
-
-        Serial.print("batt" + String(i) + " voltge:");
-        Serial.println(5000.0/4096*cell[0]);
-        Serial.print("batt" + String(i) + " current:");
-        Serial.println(5000.0/4096*cell[1]);
-        Serial.print("batt" + String(i) + " temperature:");
-        Serial.println(5000.0/4096*cell[2]);
         
-        if(cell[0] < VOLTAGE_CUTOFF){
-          Serial.println(" cutout reached");
-          I_set = 0;
-        }
+        Serial.print("batt" + String(i) + " voltage:"); Serial.println(5000.0/4096*cell[0]);
+        Serial.print("batt" + String(i) + " current:"); Serial.println(5000.0/4096*cell[1]);
+        Serial.print("batt" + String(i) + " temperature:"); Serial.println(5000.0/4096*cell[2]);
       }
-      Serial.println("\n");
+      Serial.println('\n');
       myFile.println();
       myFile.close();
-      Serial.println(F("wrote stuff to SD card"));
     }
     else{
       MCPDAC.setVoltage(CHANNEL_A, 0);
@@ -136,4 +131,3 @@ void loop(){
     time_flag--;
   }
 }
-
