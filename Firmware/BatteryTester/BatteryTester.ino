@@ -116,9 +116,9 @@ void loop(){
         myFile.print(cell[1]); myFile.print(',');
         myFile.print(cell[2]); myFile.print(',');
         
-        Serial.print("batt" + String(i) + " voltage:"); Serial.println(5000.0/4096*cell[0]);
-        Serial.print("batt" + String(i) + " current:"); Serial.println(5000.0/4096*cell[1]);
-        Serial.print("batt" + String(i) + " temperature:"); Serial.println(5000.0/4096*cell[2]);
+        //Serial.print("batt" + String(i) + " voltage:"); Serial.println(5000.0/4096*cell[0]);
+        //Serial.print("batt" + String(i) + " current:"); Serial.println(5000.0/4096*cell[1]);
+        //Serial.print("batt" + String(i) + " temperature:"); Serial.println(5000.0/4096*cell[2]);
       }
       Serial.println('\n');
       myFile.println();
